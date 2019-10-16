@@ -15,5 +15,8 @@ namespace MoldovaDentAPI.Persistence.Models
         public byte[] PasswordHash { get; set; }
         [Required]
         public byte[] PasswordSalt { get; set; }
+        public int IncorrectAttempts { get; set; }
+        public DateTime? LockDate { get; set; }
+        public bool IsEmailVerified { get; set; }
     }
 }

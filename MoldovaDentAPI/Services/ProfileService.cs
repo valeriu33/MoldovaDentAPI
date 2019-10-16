@@ -44,9 +44,26 @@ namespace MoldovaDentAPI.Services
             
             var profileFromDb = _profileRepository.GetProfileByEmail(profileFromUi.Email);
 
-            if (profileFromDb == null || !VerifyPasswordHash(profileFromUi.Password,
+            if (profileFromDb == null)
+            {
+                throw new AuthenticationException();
+            }
+
+            if (profileFromDb.LockDate.HasValue &&
+                profileFromDb.LockDate.Value < DateTime.Now.AddDays(1))// TODO: Magic number
+            {
+                throw new DomainModelException("Account locked");
+            }
+
+            if (!VerifyPasswordHash(profileFromUi.Password,
                 profileFromDb.PasswordHash, profileFromDb.PasswordSalt))
             {
+                _profileRepository.AddAttempt(profileFromDb.Email);
+                if (profileFromDb.IncorrectAttempts >= 5)// TODO: Magic number
+                {
+                    _profileRepository.LockProfile(profileFromDb.Email);
+                    throw new DomainModelException("Account locked");
+                }
                 throw new AuthenticationException();
             }
             

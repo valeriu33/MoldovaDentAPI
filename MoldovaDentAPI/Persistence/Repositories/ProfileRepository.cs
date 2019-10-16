@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using MoldovaDentAPI.Models;
 using MoldovaDentAPI.Persistence.Models;
 using MoldovaDentAPI.Persistence.Repositories.Abstractions;
 
@@ -8,7 +7,7 @@ namespace MoldovaDentAPI.Persistence.Repositories
 {
     public class ProfileRepository: IProfileRepository
     {
-        private DataContext _context;
+        private readonly DataContext _context;
 
         public ProfileRepository(DataContext context)
         {
@@ -30,6 +29,25 @@ namespace MoldovaDentAPI.Persistence.Repositories
         public Profile GetProfileById(int id)
         {
             return _context.Profiles.SingleOrDefault(p => p.Id == id);
+        }
+
+        public void AddAttempt(string email)
+        {
+            var profile = _context.Profiles.Single(p => p.Email == email);
+            profile.IncorrectAttempts++;
+            _context.SaveChanges();
+        }
+        public void LockProfile(string email)
+        {
+            var profile = _context.Profiles.Single(p => p.Email == email);
+            profile.LockDate = DateTime.Now;
+            _context.SaveChanges();
+        }
+        public void UnlockProfile(string email)
+        {
+            var profile = _context.Profiles.Single(p => p.Email == email);
+            profile.LockDate = null;
+            _context.SaveChanges();
         }
     }
 }
