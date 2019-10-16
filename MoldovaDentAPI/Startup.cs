@@ -34,7 +34,7 @@ namespace MoldovaDentAPI
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper(typeof(AutoMapperProfile));
-            services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
+            services.AddDbContext<DataContext>(x => x.UseSqlServer("Data Source=EN410574\\SQLEXPRESS;Initial Catalog=MoldovaDent;Integrated Security=True"));
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);

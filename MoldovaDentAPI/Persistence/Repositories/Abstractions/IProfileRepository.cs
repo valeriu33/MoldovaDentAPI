@@ -11,7 +11,7 @@ namespace MoldovaDentAPI.Persistence.Repositories.Abstractions
     {
         Profile GetProfileByEmail(string email);
 
-        Profile CreateProfile(Profile profile);
+        void CreateProfile(Profile profile);
 
         Profile GetProfileById(int id);
     }

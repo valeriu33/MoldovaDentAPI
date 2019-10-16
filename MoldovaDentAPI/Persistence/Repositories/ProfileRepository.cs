@@ -21,11 +21,10 @@ namespace MoldovaDentAPI.Persistence.Repositories
                 p.Email == email);
         }
 
-        public Profile CreateProfile(Profile profile)
-        {//TODO: What should CreateProfile() return?
+        public void CreateProfile(Profile profile)
+        {
             _context.Profiles.Add(profile);
             _context.SaveChanges();
-            return profile;
         }
 
         public Profile GetProfileById(int id)

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MoldovaDentAPI.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MoldovaDentAPI.Helpers;
+using MoldovaDentAPI.Helpers.Exceptions;
 using MoldovaDentAPI.ModelsDto;
 using MoldovaDentAPI.Persistence.Repositories.Abstractions;
 using MoldovaDentAPI.Services.Abstractions;
@@ -29,17 +34,23 @@ namespace MoldovaDentAPI.Services
         }
 
         public ProfileAuthenticationResponseDto Authenticate(ProfileAuthenticationRequestDto profileFromUi)
-        {//TODO: Validate parameters
+        {
+            // Validating parameters
+            var invalidParams = new List<string>();
+            if (!IsValidEmail(profileFromUi.Email)) // TODO: Do I need email validation on login?
+                invalidParams.Add(nameof(profileFromUi.Email));
+
+            if (invalidParams.Any()) throw new ValidationException(invalidParams);
+            
             var profileFromDb = _profileRepository.GetProfileByEmail(profileFromUi.Email);
 
-            if (profileFromDb == null) return null;
-
-            if (!VerifyPasswordHash(profileFromUi.Password,
+            if (profileFromDb == null || !VerifyPasswordHash(profileFromUi.Password,
                 profileFromDb.PasswordHash, profileFromDb.PasswordSalt))
             {
-                return null;
+                throw new AuthenticationException();
             }
-
+            
+            // Generating response
             var responseProfile = new ProfileAuthenticationResponseDto
             {
                 Email = profileFromDb.Email
@@ -68,7 +79,18 @@ namespace MoldovaDentAPI.Services
         }
 
         public void Register(ProfileAuthenticationRequestDto profileFromUi)
-        {//TODO: Validate parameters
+        {
+            var invalidParams = new List<string>();
+            if (!IsValidEmail(profileFromUi.Email))
+                invalidParams.Add(nameof(profileFromUi.Email));
+
+            if (!IsValidPassword(profileFromUi.Password))
+                invalidParams.Add(nameof(profileFromUi.Password));
+
+            if (invalidParams.Any())
+                throw new ValidationException(invalidParams);
+            
+
             CreatePasswordHash(profileFromUi.Password, out byte[] passwordHash,
                 out byte[] passwordSalt);
 
@@ -78,8 +100,17 @@ namespace MoldovaDentAPI.Services
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };
-
-            _profileRepository.CreateProfile(profileForDb);
+            try
+            {
+                _profileRepository.CreateProfile(profileForDb);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException?.Message
+                        .Contains("Email") ?? false)
+                    throw new DomainModelException("Email already used");
+                throw;
+            }
         }
 
         public Profile GetProfileById(int id)
@@ -121,6 +152,16 @@ namespace MoldovaDentAPI.Services
 
                 return true;
             }
+        }
+
+        private static bool IsValidPassword(string password)
+        {
+            return RegexConstants.Password.IsMatch(password);
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            return RegexConstants.Email.IsMatch(email);
         }
     }
 }
