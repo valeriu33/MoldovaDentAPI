@@ -11,11 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MoldovaDentAPI.Helpers;
 using MoldovaDentAPI.Persistence;
-using MoldovaDentAPI.Persistence.Repositories;
-using MoldovaDentAPI.Persistence.Repositories.Abstractions;
 using MoldovaDentAPI.Services;
-using MoldovaDentAPI.Services.Abstractions;
+using MoldovaDentAPI.Services.Interfaces;
 using AutoMapper;
+using MoldovaDentAPI.Persistence.Interfaces;
 
 namespace MoldovaDentAPI
 {
@@ -32,9 +31,15 @@ namespace MoldovaDentAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            ); 
             services.AddAutoMapper(typeof(AutoMapperProfile));
-            services.AddDbContext<DataContext>(x => x.UseSqlServer("Data Source=EN410574\\SQLEXPRESS;Initial Catalog=MoldovaDent;Integrated Security=True"));
+            //services.AddDbContext<DataContext>(x => x.UseSqlServer("Data Source=EN410555\\SQLEXPRESS;Initial Catalog=MoldovaDent;Integrated Security=True"));
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -76,7 +81,9 @@ namespace MoldovaDentAPI
 
             // configure DI for application services
             services.AddScoped<IProfileService, ProfileService>();
-            services.AddScoped<IProfileRepository, ProfileRepository>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<DataContext, DataContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

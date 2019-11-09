@@ -8,6 +8,9 @@ namespace MoldovaDentAPI.Persistence
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentVisit> AppointmentVisits { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

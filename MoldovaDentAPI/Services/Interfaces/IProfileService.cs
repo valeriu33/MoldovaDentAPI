@@ -2,7 +2,7 @@
 using MoldovaDentAPI.ModelsDto;
 using MoldovaDentAPI.Persistence.Models;
 
-namespace MoldovaDentAPI.Services.Abstractions
+namespace MoldovaDentAPI.Services.Interfaces
 {
     public interface IProfileService
     {
