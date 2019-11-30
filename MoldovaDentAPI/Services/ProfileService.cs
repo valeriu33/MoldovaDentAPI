@@ -13,10 +13,11 @@ using Microsoft.IdentityModel.Tokens;
 using MoldovaDentAPI.Helpers;
 using MoldovaDentAPI.Helpers.Exceptions;
 using MoldovaDentAPI.ModelsDto;
+using MoldovaDentAPI.Persistence.Interfaces;
 using MoldovaDentAPI.Persistence.Repositories.Abstractions;
-using MoldovaDentAPI.Services.Abstractions;
+using MoldovaDentAPI.Persistence.Repositories.Interfaces;
+using MoldovaDentAPI.Services.Interfaces;
 using Profile = MoldovaDentAPI.Persistence.Models.Profile;
-
 
 namespace MoldovaDentAPI.Services
 {
@@ -26,9 +27,9 @@ namespace MoldovaDentAPI.Services
         private readonly AppSettings _appSettings;
         private readonly IMapper _mapper;
 
-        public ProfileService(IProfileRepository profileRepository, IOptions<AppSettings> appSettings, IMapper mapper)
+        public ProfileService(IUnitOfWork unitOfWork, IOptions<AppSettings> appSettings, IMapper mapper)
         {
-            _profileRepository = profileRepository;
+            _profileRepository = unitOfWork.ProfileRepository;
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }

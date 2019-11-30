@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MoldovaDentAPI.Helpers.Exceptions;
 using MoldovaDentAPI.ModelsDto;
-using MoldovaDentAPI.Services.Abstractions;
+using MoldovaDentAPI.Services.Interfaces;
 
 namespace MoldovaDentAPI.Controllers
 {

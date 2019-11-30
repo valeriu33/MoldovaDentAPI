@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MoldovaDentAPI.Persistence.Models
@@ -18,5 +19,8 @@ namespace MoldovaDentAPI.Persistence.Models
         public int IncorrectAttempts { get; set; }
         public DateTime? LockDate { get; set; }
         public bool IsEmailVerified { get; set; }
+
+        // Business fields
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }
