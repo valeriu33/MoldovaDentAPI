@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using MoldovaDentAPI.Persistence.Models;
 using MoldovaDentAPI.Persistence.Repositories.Abstractions;
-using MoldovaDentAPI.Persistence.Repositories.Interfaces;
 
 namespace MoldovaDentAPI.Persistence.Repositories
 {
-    public class ProfileRepository: IProfileRepository
+public class ProfileRepository: IProfileRepository
     {
         private readonly DataContext _context;
 

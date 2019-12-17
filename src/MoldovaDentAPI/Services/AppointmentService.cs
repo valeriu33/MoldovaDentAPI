@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Force.DeepCloner;
 using MoldovaDentAPI.Helpers.Exceptions;
 using MoldovaDentAPI.ModelsDto.Appointment;
 using MoldovaDentAPI.Persistence.Interfaces;
@@ -137,7 +135,7 @@ namespace MoldovaDentAPI.Services
             {
                 ProcedureId = dto.ProcedureId,
                 ProcedureName = dto.ProcedureName,
-                AdjustedDuration = dto.AdjustedDuration.Value,
+                AdjustedDuration = dto.AdjustedDuration != null ? dto.AdjustedDuration.Value : TimeSpan.FromSeconds(0),
                 AdjustedPrice = dto.AdjustedPrice.Value,
                 TimeOfVisit = dto.TimeOfVisit
             };

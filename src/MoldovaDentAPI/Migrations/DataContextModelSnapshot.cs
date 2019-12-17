@@ -3,21 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoldovaDentAPI.Persistence;
 
 namespace MoldovaDentAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20191109202414_Init")]
-    partial class Init
+    partial class DataContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -25,17 +23,23 @@ namespace MoldovaDentAPI.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Comment");
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreationTime");
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LastUpdatedTime");
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("ProfileId");
+                    b.Property<int?>("ProfileId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -48,19 +52,26 @@ namespace MoldovaDentAPI.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<TimeSpan>("AdjustedDuration");
+                    b.Property<TimeSpan>("AdjustedDuration")
+                        .HasColumnType("time");
 
-                    b.Property<decimal>("AdjustedPrice");
+                    b.Property<decimal>("AdjustedPrice")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("AppointmentId");
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ProcedureId");
+                    b.Property<int?>("ProcedureId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ProcedureName");
+                    b.Property<string>("ProcedureName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("TimeOfVisit");
+                    b.Property<DateTime>("TimeOfVisit")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -73,26 +84,35 @@ namespace MoldovaDentAPI.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IncorrectAttempts");
+                    b.Property<int>("IncorrectAttempts")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsEmailVerified");
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LockDate");
+                    b.Property<DateTime?>("LockDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
 
@@ -104,7 +124,7 @@ namespace MoldovaDentAPI.Migrations
 
             modelBuilder.Entity("MoldovaDentAPI.Persistence.Models.Appointment", b =>
                 {
-                    b.HasOne("MoldovaDentAPI.Persistence.Models.Profile")
+                    b.HasOne("MoldovaDentAPI.Persistence.Models.Profile", null)
                         .WithMany("Appointments")
                         .HasForeignKey("ProfileId");
                 });
@@ -114,7 +134,8 @@ namespace MoldovaDentAPI.Migrations
                     b.HasOne("MoldovaDentAPI.Persistence.Models.Appointment", "Appointment")
                         .WithMany("AppointmentVisits")
                         .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

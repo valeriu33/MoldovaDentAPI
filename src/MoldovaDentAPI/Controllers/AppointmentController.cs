@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoldovaDentAPI.ModelsDto.Appointment;
-using MoldovaDentAPI.Persistence.Interfaces;
 using MoldovaDentAPI.Persistence.Models;
-using MoldovaDentAPI.Persistence.Repositories.Abstractions;
-using MoldovaDentAPI.Persistence.Repositories.Interfaces;
+
 using MoldovaDentAPI.Services.Interfaces;
 
 namespace MoldovaDentAPI.Controllers

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MoldovaDentAPI.Models;
 using Microsoft.Extensions.Options;
@@ -25,12 +24,10 @@ namespace MoldovaDentAPI.Services
     {
         private readonly IProfileRepository _profileRepository;
         private readonly AppSettings _appSettings;
-        private readonly IMapper _mapper;
-
-        public ProfileService(IUnitOfWork unitOfWork, IOptions<AppSettings> appSettings, IMapper mapper)
+       
+        public ProfileService(IUnitOfWork unitOfWork, IOptions<AppSettings> appSettings)
         {
             _profileRepository = unitOfWork.ProfileRepository;
-            _mapper = mapper;
             _appSettings = appSettings.Value;
         }
 
